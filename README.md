@@ -1,2 +1,0 @@
-# nehaevsky_kombikorm
-KombikormLNR
