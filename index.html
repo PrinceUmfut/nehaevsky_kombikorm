@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Нехаевский Комбикорм</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background: #fff;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+    }
+    .logo {
+      width: 50px;
+      height: 50px;
+      margin-right: 15px;
+    }
+    h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+    .intro {
+      padding: 20px;
+      font-size: 18px;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+    }
+    .filters button {
+      padding: 10px 20px;
+      border: none;
+      background: #eee;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .filters button.active {
+      background: #ff9800;
+      color: #fff;
+    }
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .card h3 {
+      margin-top: 0;
+    }
+    .price {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    footer {
+      background: #fff;
+      padding: 20px;
+      border-top: 1px solid #ddd;
+    }
+    .contact, .form {
+      margin-bottom: 20px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button.submit {
+      background: #ff9800;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <svg class="logo" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#ff9800"/>
+    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="60" fill="#fff">Н</text>
+  </svg>
+  <h1>Нехаевский Комбикорм</h1>
+</header>
+
+<div class="intro">
+  Мы предлагаем комбикорма для бройлеров, кур, свиней, кроликов и других животных. В нашем ассортименте корма для разных возрастных групп и стадий откорма.
+</div>
+
+<div class="filters">
+  <button class="active" onclick="filter('Все')">Все</button>
+  <button onclick="filter('Бройлеры')">Бройлеры</button>
+  <button onclick="filter('Куры')">Куры</button>
+  <button onclick="filter('Свиньи')">Свиньи</button>
+  <button onclick="filter('Кролики')">Кролики</button>
+</div>
+
+<div class="products" id="products"></div>
+
+<footer>
+  <div class="contact">
+    <h3>Контакты</h3>
+    <p>Телефон: +7 (959) 230-14-44</p>
+  </div>
+  <div class="form">
+    <h3>Обратная связь</h3>
+    <form>
+      <label>Имя:</label>
+      <input type="text" name="name" required />
+      <label>Телефон:</label>
+      <input type="tel" name="phone" required />
+      <label>Сообщение:</label>
+      <textarea name="message" rows="4" required></textarea>
+      <button type="submit" class="submit">Отправить</button>
+    </form>
+  </div>
+</footer>
+
+<script>
+const products = [
+  { name: "ПК 5-4 Старт для бройлеров", group: "Бройлеры", age: "0-18 недель", weight: "25 кг", retail: "₽32", wholesale: "₽30" },
+  { name: "ПК 6-6 Откорм для бройлеров", group: "Бройлеры", age: "19-38 недель", weight: "25 кг", retail: "₽30", wholesale: "₽28" },
+  { name: "ПК 2-6 Старт для цыплят, утят", group: "Куры", age: "0-8 недель", weight: "25 кг", retail: "₽36", wholesale: "₽34" },
+  { name: "ПК 1-8 Несушка для кур", group: "Куры", age: "от 9 недель", weight: "25 кг", retail: "₽30", wholesale: "₽28" },
+  { name: "ПК 55-11 Отрокорм для свиней", group: "Свиньи", age: "20-53 недель", weight: "25 кг", retail: "₽39", wholesale: "₽37" },
+  { name: "КСУ-15% Отрокорм для свиней", group: "Свиньи", age: "от 54 недель", weight: "25 кг", retail: "₽46", wholesale: "₽44" },
+  { name: "ПК 90-1 Кролик лактация", group: "Кролики", age: "до 3 месяцев", weight: "25 кг", retail: "₽31", wholesale: "₽29" },
+  { name: "ПК 92-1 Откорм для кролей", group: "Кролики", age: "от 4 месяцев", weight: "25 кг", retail: "₽32", wholesale: "₽30" }
+];
+
+function renderProducts(filterGroup = "Все") {
+  const container = document.getElementById("products");
+  container.innerHTML = "";
+  products
+    .filter(p => filterGroup === "Все" || p.group === filterGroup)
+    .forEach(p => {
+      container.innerHTML += `
+        <div class="card">
+          <h3>${p.name}</h3>
+          <p>Возраст: ${p.age}</p>
+          <p>Вес: ${p.weight}</p>
+          <div class="price">Розница: ${p.retail} / Опт: ${p.wholesale}</div>
+        </div>
+      `;
+    });
+}
+
+function filter(group) {
+  document.querySelectorAll(".filters button").forEach(btn => btn.classList.remove("active"));
+  event.target.classList.add("active");
+  renderProducts(group);
+}
+
+renderProducts();
+</script>
+
+</body>
+</html>
